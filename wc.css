@@ -1,0 +1,81 @@
+body {
+    background-color: black;
+    text-align: center;
+    font-family: 'Arial';
+    font-weight: bold;
+}
+.clock {
+    text-align: center;
+    font-family: 'Arial';
+    color: #9005c6;
+    font-size: 75px;
+    font-weight: bold;
+}
+.weather-cont {
+    margin: 0px;
+    display: block;
+    width: 100%;
+}
+.weather {
+    display: inline-block;
+    overflow: none;
+}
+.weather-left {
+    right: 0px;
+    width: 120px;
+    height: 100%;
+    margin: auto;
+    float:  left;
+    display: inline;
+}
+.weather-right {
+    overflow: none;
+    display: inline;
+    margin: auto;
+    left: 0px;
+    float: right;
+    width: 280px;
+    text-align: center;
+}
+.weatherLocation {
+    text-align: center;
+    font-family: 'Arial';
+    font-size: 32px;
+    font-weight: bold;
+    color: #616266;
+}
+.weatherCondition {
+    text-align: center;
+    font-family: 'Arial';
+    font-size: 32px;
+    font-weight: bold;
+    color: #e27878;
+
+}
+.weatherDescription {
+    text-align: center;
+    color: #616266;
+    font-family: 'Arial';
+    font-size: 32px;
+    font-weight: bold;
+}
+.indoor {
+    margin-top: 10px;
+    text-align: center;
+    font-family: 'Arial';
+    font-size: 50px;
+    font-weight: bold;
+    color: magenta;
+}
+.weatherIcon {
+    border: 0;
+    height: 120px;
+    width: 120px;
+    z-index: -1;
+}
+.error { color: red; }
+.tok { color: green; }
+.thigh1 { color: #eda740; }
+.thigh2 { color: #d10c5b; }
+.tlow1  { color: #0763f7; }
+.tlow2  { color: #6459ff; }

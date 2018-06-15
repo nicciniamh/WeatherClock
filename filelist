@@ -1,0 +1,22 @@
+.
+├── bin
+│   ├── busykbd
+│   ├── getowm
+│   ├── si
+│   ├── si7021data
+│   └── weatherclock
+├── filelist
+├── owm.php
+├── places.php
+├── pylib
+│   └── si7021.py
+├── strftime.js
+├── util.js
+├── wc.css
+├── wc.html
+├── wc.js
+├── wdata.php
+├── WeatherClock.mp4
+└── weather.png
+
+2 directories, 17 files

@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <title>Real-Time Weather Clock</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="strftime.js"></script>
+    <script src="util.js"></script>
+    <script src="wc.js"></script>
+    <link rel="stylesheet" href="wc.css" />
+    <link rel="icon" type="image/png" href="weather.png" />
+</head>
+<body>
+    <div id="clock" class="clock">
+    </div>
+    <div class='weather-cont'>
+        <div class='weather'>
+            <div class="weather-left">
+                <img class="weatherIcon" id="weatherIcon" src="blank.png"/>
+            </div>
+            <div class="weather-right">
+                <div id="weatherLocation" class="weatherLocation"></div>
+                <div id="weatherDescription" class="weatherDescription"></div>
+    	       <div id="weatherCondition" class="weatherCondition"></div>
+            </div>
+        </div>
+    </div>
+    <div id="indoor" class="indoor">
+    </div>
+</body>
+</html>

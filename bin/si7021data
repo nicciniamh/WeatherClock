@@ -1,0 +1,34 @@
+#!/usr/bin/sudo /usr/bin/python
+
+import sys, json, time, daemon, socket
+sys.path.append('/home/pi/lib/python')
+import si7021
+host = socket.gethostname().split('.')[0]
+config='/home/pi/etc/si7021cfg.json'
+
+try:
+	with open(config) as f:
+		j = json.load(f)
+	si = si7021.si7021(j['i2cbus'])
+
+except IOError:
+	print >> sys.stderr,"{}: config file ({}) not found, using class default bus for i2c".format(sys.argv[0], config)
+	si = si7021.si7021()
+	
+errlog = open('/sensor/si7021.error.log','a')
+#with daemon.DaemonContext():
+if True:
+	while True:
+		try:
+			[[tc,tf],humi] = si()
+			v = {'sys': host, 'tf': tf, 'tc': tc, 'h': humi, 'time': int(time.strftime("%s")), 'status': 'ok'}
+			with open('/sensor/temp.json','w') as f:
+				json.dump(v,f)
+				f.write('\n')
+			time.sleep(1)
+		except Exception as e:
+			print errlog, 'Exception encountered, see ya later, gator: {}'.format(e)
+			break
+
+print >>errlog,'Exiting.'
+close(errlog)

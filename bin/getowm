@@ -1,0 +1,91 @@
+#!/usr/bin/python
+import sys, os, time, json, urllib2, pytemperature, datetime
+
+owmkey = 'cb6d6e5461bae3d0955ddf2e3f5ea260'
+
+def winds(sp,deg):
+	if sp < 1:
+		return 'Calm'
+	r = {
+		'NE':	(21,75),
+		'E':	(75,115),
+		'SE':	(116,155),
+		'S':	(155,200),
+		'SW':	(201,240),
+		'W':	(241,285),
+		'NW':	(285,350)
+	}
+	card = 'N'
+	for i in r:
+		r1,r2 = r[i]
+		if deg in range(r1,r2):
+			card = i
+	return '{} {}'.format(card,int(sp))
+
+def baroName(pressure = None):
+    ranges = {   'Stormy':   (0,950),
+                'Rain':     (951,975),
+                'Change':   (976,1019),
+                'Fair':     (1020,1055),
+                'Dry': 		(1056,9999)}
+
+    for i  in ['Stormy','Rain','Change','Fair','Dry']:
+    	r1,r2 = ranges[i]
+        if pressure >= r1 and pressure <= r2:
+            return i
+    return str(pressure)
+
+class openweather():
+	def __init__(self,apikey):
+		self.place = ''
+		self.apikey = apikey
+		self.coords = [
+			(45.6134,-123.9429,'Rockaway'),
+			(45.4566, -123.8440,'Tillamook'),	
+			(46.1879,-123.8313,'Astoria'),
+			(45.7054, -121.52146,'Hood River'),
+		]
+		self.cindex = 0
+		self._deftlocal = {'temp': -1, 'humi': -1, 'cond': 'nodata', 'name': 'Nowhere', 'baro': 'Nodata', 'wind': 'Calm', 'time': -1}
+		self.local = self._deftlocal
+	def url(self):
+		if self.cindex >= len(self.coords):
+			return None
+		lat,lon,self.place = self.coords[self.cindex]
+		self.place = self.place.lower().replace(' ','-')
+		self.cindex = self.cindex + 1 
+		return 'http://api.openweathermap.org/data/2.5/weather?lat={}&lon={}&appid={}'.format(lat,lon,self.apikey)
+
+	def getWeather(self):
+		url = self.url()
+		if url:	
+			try:
+				data = json.loads(urllib2.urlopen(url).read())
+				with open('/sensor/owm/owm-{}.json'.format(self.place),'w') as f:
+					json.dump(data,f)
+			except:
+				self.local = self._deftlocal
+			try:
+				self.local['temp'] = int(pytemperature.k2f(data['main']['temp']))
+				self.local['humi'] = int(data['main']['humidity'])
+				self.local['cond'] = data['weather'][0]['description'].title()
+				self.local['name'] = data['name']
+				self.local['baro'] = baroName(data['main']['pressure'])
+				self.local['pressure'] = data['main']['pressure']
+				self.local['icon'] = data['weather'][0]['icon']
+				self.local['wind'] = winds(data['wind']['speed'],data['wind']['deg'])
+				self.local['time'] = int(time.time())
+				self.local['datatime']  = time.strftime('%X',time.localtime(data['dt']))
+				self.local['age'] = str(datetime.timedelta(seconds=int(time.time() - data['dt'])))
+			except KeyError as e:
+				print 'Key Error in JSON from owm, {}'.format(e)
+				self.local = self._deftlocal
+			with open('/sensor/owm/data-{}.json'.format(self.place),'w') as f:
+				json.dump(self.local,f)
+		return url
+
+if not os.path.exists('/sensor/owm'):
+	os.makedirs('/sensor/owm')
+o = openweather(owmkey)
+while o.getWeather():
+	time.sleep(10)
